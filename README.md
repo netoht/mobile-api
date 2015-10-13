@@ -1,7 +1,7 @@
 # Entrando na documentação
 
 1. Acesso o [Swagger Editor](http://editor.swagger.io/)
-1. `Menu` > `Import URL...`
+1. `Menu` > `File` > `Import URL...`
 1. Desmarca a opção `Use CORS proxy`
 1. Adicione a url:
   https://ec2-54-86-242-15.compute-1.amazonaws.com/public/swagger.yaml
