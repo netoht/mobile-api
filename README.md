@@ -1,17 +1,17 @@
 # Entrando na documentação
 
-1. Acesso o [Swagger Editor](http://editor.swagger.io/)
-1. `Menu` > `File` > `Import URL...`
-1. Desmarca a opção `Use CORS proxy`
+1. Acesse o [Swagger Editor](http://editor.swagger.io/)
+1. Vá em `Menu` > `File` > `Import URL...`
+1. Desmarque a opção `Use CORS proxy`
 1. Adicione a url:
   https://ec2-54-86-242-15.compute-1.amazonaws.com/public/swagger.yaml
 1. Clique em `Import`
-1. Pronto, agora você pode conferir tudo passo-a-passo para utilizar a API e a arquitetura utilizada para sua construção
+1. Pronto, agora você pode conferir tudo passo-a-passo para poder utilizar a API e a arquitetura utilizada para sua construção.
 
 
-Abaixo contem uma breve descrição das ferramentas utilizadas para construção da api. Não se importe com isso, vá direto para o passo anterior da importação :)
+Abaixo contem uma breve descrição das ferramentas utilizadas para construção da api. Não se importe com isso, vá direto para o passo anterior da importação ;)
 
-Execuções via [curl](curl.md)
+Execuções via da api via [curl](curl.md)
 
 ##### Gerando Java KeyStore para habilitar o https
 
