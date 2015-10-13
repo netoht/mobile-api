@@ -1,5 +1,6 @@
 # Entrando na documentação
 
+1. Acesso o endereço: `https://ec2-54-86-242-15.compute-1.amazonaws.com/public/swagger.yaml` e aceite o certificado auto assinado
 1. Acesse o [Swagger Editor](http://editor.swagger.io/)
 1. Vá em `Menu` > `File` > `Import URL...`
 1. Desmarque a opção `Use CORS proxy`
