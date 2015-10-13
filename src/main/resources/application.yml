@@ -1,0 +1,66 @@
+
+# server context
+server:
+  port: ${server.port}
+
+
+# server jetty - https
+  ssl:
+    enabled: true
+    key-store: classpath:keystore.p12
+    key-store-password: changeit
+    key-store-type: pkcs12
+    key-alias: jetty
+    key-password: changeit
+
+
+# server manager - monitor
+management:
+  port: ${server.admin.port}
+  security:
+    sessions: never
+    enabled: false
+    role: ROLE_ROOT
+
+
+# server connection - mongodb
+spring:
+  data:
+    mongodb:
+      host: ${mongodb.host}
+      port: ${mongodb.port}
+      database: ${mongodb.database}
+      username: ${mongodb.user}
+      password: ${mongodb.pass}
+
+
+# server connection - postgresql
+  datasource:
+    initialize: ${db.init:false}
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${postgres.host}:${postgres.port}/${postgres.database}
+    username: ${postgres.user}
+    password: ${postgres.pass}
+  jpa:
+    hibernate:
+      ddl-auto: ${hibernate.ddl:none}
+    show-sql: true
+    generate-ddl: false
+
+# server connection - gmail
+  mail:
+    host: smtp.gmail.com
+    port: 465
+    properties:
+      notify.to: ${email.notify.to}
+      mail.smtp.ssl.enable: true
+
+# template system
+  thymeleaf:
+    cache: false
+
+logging:
+  level:
+    #ROOT: DEBUG
+    #org.hibernate.SQL: DEBUG
+    #org.hibernate.type.descriptor.sql.BasicBinder: TRACE

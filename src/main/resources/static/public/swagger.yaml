@@ -1,0 +1,230 @@
+swagger: '2.0'
+info:
+  title: Mobile Taxis API
+  description: |
+    Mobile Taxis API será utilizada por aplicativos de smartphone que mostra um mapa com os taxistas ativos da Empresa XXTaxis. O sistema deve assumir que tem diversos taxistas cadastrados e permitir atualizar o status desses taxistas, consultar status deles e encontrar taxistas em uma dada área. Toda comunicação deve ser feita com JSON.
+
+    1. Arquitetura
+    ---
+    ![](https://ec2-54-86-242-15.compute-1.amazonaws.com/public/api.png)
+
+    - **PostgreSQL:** Para armazenamento de dados de autenticação, como client_id's, tokens, e os dados dos taxistas cadastrados.
+
+    - **MongoDB:** Para armazenamento dos status dos taxistas, utilizando a busca [2dsphere](http://docs.mongodb.org/master/core/2dsphere/), ou seja, suporta consultas que calculam geometrias em uma esfera earth-like.
+
+    - **Java:** Utilizado para construção da api com utilização do framework [Spring Boot](http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/).
+
+
+    2. Autenticação
+    ---
+
+    Foi implementada a autenticação com **OAuth2.0** com o fluxo **client credentials flow**.
+
+    Existe uma aplicação pré-cadastrada no sistema com:
+    ```
+    - client_id:
+          mobile-73hZFgSJ2Gdc48BJBkuWhe0nPw8TdZYdP8HeCv2bUR0y8l2Wy6
+
+    - client_secret:
+          cCTemqOcYFUy2NOqb265vS9l8RRiFjtAkKiqoUkqeARWBPjm
+    ```
+
+    Para facilitar a obtenção do access_token, utilize o programa *curl* em seu terminal e execute o comando abaixo:
+
+    ```
+    # Comando:
+    curl -k -X POST https://ec2-54-86-242-15.compute-1.amazonaws.com/oauth/token -d "grant_type=client_credentials&scope=read%20write&client_id=mobile-73hZFgSJ2Gdc48BJBkuWhe0nPw8TdZYdP8HeCv2bUR0y8l2Wy6&client_secret=cCTemqOcYFUy2NOqb265vS9l8RRiFjtAkKiqoUkqeARWBPjm"
+
+    # Resultado:
+    {"access_token":"ac922af7-273d-4020-a0d3-cbb0d2c5813b","token_type":"bearer","scope":"read write"}
+    ```
+
+    Clique no botão **Autenticate** logo abaixo na seção `Security` e preencha o campo com o valor:
+
+    Access token retornado: `ac922af7-273d-4020-a0d3-cbb0d2c5813b`
+
+    O prefixo Bearer será utilizado de acordo com a [RFC do protocolo OAuth2.0](https://tools.ietf.org/html/rfc6750#section-2.1)
+
+    Agora é só utilizar os formulários abaixo para testar os serviços implementados.
+
+
+    3. Observações
+    ---
+
+    Você pode utilizar o link **[Lista de Taxistas](https://ec2-54-86-242-15.compute-1.amazonaws.com/drivers)** para visualizar os `ids` dos taxistas cadastrados por você durante os testes.
+
+    ~
+
+  version: 1.0.0-SNAPSHOT
+host: ec2-54-86-242-15.compute-1.amazonaws.com
+schemes:
+  - https
+basePath: /api/v1
+security:
+  - oauth:
+    - read
+    - write
+paths:
+  /drivers:
+    post:
+      description: Cadastra um novo taxista no sistema
+      consumes:
+      - application/json
+      parameters:
+        - name: driver
+          in: body
+          required: true
+          schema:
+            type: object
+            $ref: '#/definitions/Driver'
+      tags:
+        - Drivers
+      responses:
+        '204':
+          description: Taxista cadastrado com sucesso
+        '409':
+          description: Placa do veículo já cadastrada no sistema por outro taxista
+        '400':
+          description: |
+            - A placa do veículo deve ser informada no padrão esperado de 'AAA-9999'
+            - O nome do taxista deve ser informado pelo campo 'name' entre 8 a 100 caracteres
+        default:
+          description: Erro inesperado
+          schema:
+            $ref: '#/definitions/Error'
+  /drivers/{driverId}/status:
+    get:
+      description: Obtém o estado de um taxista e sua localização
+      produces:
+      - application/json
+      parameters:
+        - name: driverId
+          in: path
+          description: id único do taxista no sistema
+          required: true
+          type: string
+          format: int64
+      tags:
+        - Drivers
+      responses:
+        '200':
+          description: Estado do taxista.
+          schema:
+            type: object
+            $ref: '#/definitions/DriverStatus'
+        '404':
+          description: Taxista não cadastrado no sistema com o id informado.
+        default:
+          description: Erro inesperado
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      description: Grava a posição atual e estado de um taxista
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+        - name: driverId
+          in: path
+          description: id único do taxista no sistema
+          required: true
+          type: string
+          format: int64
+        - name: driverStatus
+          in: body
+          required: true
+          schema:
+            type: object
+            $ref: '#/definitions/DriverStatus'
+      tags:
+        - Drivers
+      responses:
+        '201':
+          description: Posição atual do taxista gravada com sucesso
+        '400':
+          description: |
+            - O 'id' do taxista informado na url é diferente do 'id' informado no corpo da mensagem.
+            - Latitude e longitude devem ser informadas corretamente (eg. -23.612474,-46.702746).
+        '404':
+          description: Taxista não cadastrado no sistema com o id informado
+        default:
+          description: Erro inesperado
+          schema:
+            $ref: '#/definitions/Error'
+  /drivers/inArea:
+    get:
+      description: Lista os taxistas ativos dentro de uma retângulo geográfico
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+        - name: sw
+          in: query
+          description: Ponto sudoeste do retângulo, no formato latitude,longitude (eg. -23.612474,-46.702746).
+          required: true
+          type: string
+          format: double,double
+        - name: ne
+          in: query
+          description: Ponto nordeste do retângulo, no formato latitude,longitude (eg. -23.589548,-46.673392).
+          required: true
+          type: string
+          format: double,double
+      tags:
+        - Drivers
+      responses:
+        '200':
+          description: Lista de taxistas ativos dentro do retângulo geográfico. (propriedade *driverAvailable* sempre retorna *true*)
+        '400':
+          description: Parâmetros 'sw' e 'ne' devem ser informados corretamente. (eg. -23.589548,-46.673392)
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DriverStatus'
+        default:
+          description: Erro inesperado
+          schema:
+              $ref: '#/definitions/Error'
+securityDefinitions:
+  oauth:
+    type: oauth2
+    flow: password
+    tokenUrl: https://ec2-54-86-242-15.compute-1.amazonaws.com/oauth/token
+    scopes:
+      read: acesso de leitura nas informações dos taxistas
+      write: acesso de escrita nas informações dos taxistas
+definitions:
+  Driver:
+    type: object
+    properties:
+      name:
+        type: string
+        description: nome do taxista
+      carPlate:
+        type: string
+        description: placa do carro do taxista
+  DriverStatus:
+    type: object
+    properties:
+      driverId:
+        type: integer
+        format: int64
+        description: id único do taxista no sistema
+      driverAvailable:
+        type: boolean
+        description: representa se o taxista está disponível ou não para corridas
+      latitude:
+        type: number
+        format: double
+        description: latitude componente de localização atual do taxista
+      longitude:
+        type: number
+        format: double
+        description: longitude componente de localização atual do taxista
+  Error:
+    type: object
+    properties:
+      message:
+        type: string

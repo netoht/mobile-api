@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Taxista não está disponível no momento</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style type="text/css">
+    #drivers { width:700px; margin: 0 auto; }
+    #drivers th { color: #D69A45; }
+    </style>
+</head>
+<xmp theme="united" style="display:none;">
+<table id="drivers">
+	<tbody>
+	<tr>
+	    <th>Código do taxista</th>
+	    <th>Mensagem</th>
+	</tr>
+	<tr>
+	    <td th:text="${driverId}"></td>
+	    <td>O taxista não está disponível no momento</td>
+	</tr>
+	</tbody>
+</table>
+</xmp>
+<script type="text/javascript" src="/public/strapdown.js"></script>
+</html>

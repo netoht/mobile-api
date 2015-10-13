@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de taxistas cadastrados</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style type="text/css">
+    #drivers { width:700px; margin: 0 auto; }
+    #drivers th { color: #D69A45; }
+    </style>
+</head>
+<xmp theme="united" style="display:none;">
+<table id="drivers">
+	<tbody>
+	<tr>
+	    <th>Código</th>
+	    <th>Nome</th>
+	    <th>Placa do veículo</th>
+	    <th>Google maps</th>
+	</tr>
+	<tr th:each="driver : ${drivers}">
+	    <td th:text="${driver.id}"></td>
+	    <td th:text="${driver.name}"></td>
+	    <td th:text="${driver.carPlate}"></td>
+	    <td><a th:href="@{drivers/location/{driverId}(driverId=${driver.id})}" target="_blank">Visualizar no mapa</a></td>
+	</tr>
+	</tbody>
+</table>
+</xmp>
+<script type="text/javascript" src="/public/strapdown.js"></script>
+</html>

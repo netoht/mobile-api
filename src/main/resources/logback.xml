@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml" />
+    <!--
+    <logger name="com.github.netoht.mobile" level="ERROR" />
+    <logger name="org.springframework.security" level="ERROR" />
+    <logger name="org.springframework.web" level="ERROR" />
+    <logger name="org.hibernate" level="ERROR" />
+     -->
+</configuration>
