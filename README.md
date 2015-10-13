@@ -6,7 +6,7 @@
 1. Adicione a url:
   https://ec2-54-86-242-15.compute-1.amazonaws.com/public/swagger.yaml
 1. Clique em `Import`
-1. Pronto, agora você pode conferir tudo a passo-a-passo para utilizar a API e a arquitetura utilizada para sua construção
+1. Pronto, agora você pode conferir tudo passo-a-passo para utilizar a API e a arquitetura utilizada para sua construção
 
 
 Abaixo contem uma breve descrição das ferramentas utilizadas para construção da api. Não se importe com isso, vá direto para o passo anterior da importação :)
@@ -19,7 +19,7 @@ Execuções via [curl](curl.md)
 keytool -genkey -keystore src/main/resources/keystore.p12 -storetype PKCS12 -keyalg RSA -keysize 2048 -validity 3650 -storepass changeit -keypass changeit -alias jetty -dname "CN=com.github.netoht, OU=netoht, O=netoht, L=Sao Paulo , ST=SP, C=BR"
 ```
 
-##### Docker mongodb / [MongoLab em prod](https://mongolab.com/databases/mobile#collections)
+##### Docker mongodb
 
 ```sh
 docker run -it -d -p 27017:27017 -p 28017:28017 --name mongodb tutum/mongodb
